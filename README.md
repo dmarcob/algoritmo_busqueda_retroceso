@@ -1,6 +1,8 @@
 # algoritmo_busqueda_retroceso
-Algoritmo de búsqueda con retroceso para encontrar la salida de un laberinto
-El algoritmo encuentra un camino desde la esquina superior izquierda hasta la esquina inferior
+Algoritmo de búsqueda con retroceso para encontrar la salida de un laberinto.
+
+
+>El algoritmo encuentra un camino desde la esquina superior izquierda hasta la esquina inferior
 derecha del laberinto, mientras se recorre un camino con obstáculos (muros).
 
 ![Image](imagenes/lab1.png) 
