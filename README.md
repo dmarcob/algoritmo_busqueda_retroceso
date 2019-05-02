@@ -15,7 +15,7 @@ derecha del laberinto, mientras se recorre un camino con obstáculos (muros).
 ~~~
 ![Image](imagenes/lab2.png) 
 ~~~
-a) Camino encontrado         b)Caso retroceso       c) Búsqueda otro camino
+a) Camino encontrado            b)Caso retroceso          c) Búsqueda otro camino
 ~~~
 ---
 ## compilación y ejecución algoritmo
