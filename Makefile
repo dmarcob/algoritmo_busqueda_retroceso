@@ -26,4 +26,4 @@ laberinto.o: laberinto.cpp laberinto.hpp
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquÃ­, que se borra sin preguntar
 clean:
-	$(RM) mainLab laberinto.o
+	$(RM) mainLab laberinto.o mainLab.o
