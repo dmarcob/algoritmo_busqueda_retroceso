@@ -26,4 +26,6 @@ a) Camino encontrado            b)Caso retroceso          c) Búsqueda otro cami
       * ancho: entero que indica la anchura del laberinto.  
       * densidad: real entre [0,1], que indica la densidad del laberinto.  
    
- Ejemplo: ./mainLab 25 25 0.4
+ Ejemplo: ./mainLab 25 25 0.4  
+   
+ 3. Para eliminar ficheros .o y ejecutable `make clean`
