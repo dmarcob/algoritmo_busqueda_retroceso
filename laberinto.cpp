@@ -1,45 +1,52 @@
 //***************************************************************************
 // File:   laberinto.cpp
-// Author: Programación II. Diego Marco 755232
+// Author: Diego Marco
 // Date:   March 27, 2019
 // Coms:   Implementación del tipo "Laberinto" para la práctica 3 de la asignatura
 //***************************************************************************
 
-#include "laberinto.hpp"
 #include <unistd.h> // para "usleep"
 #include <fstream> //trabajo con ficheros
 #include <ctime> //para "time"
 #include <cstdlib> //para "srand" "rand"
+#include "laberinto.hpp"
+
+// ARREGLAR->   GenerarLaberinto1
+// COMPLETAR -> mostrarLaberintoR
+//*************************************************************************
+// AUX1:Encontrar un camino en el laberinto
+//*************************************************************************
 bool busqueda(Laberinto& lab, int y, int x) {
   if (y == lab.alto - 2 && x == lab.ancho - 2) {
-    //caso posición actual es la salida
-    return true;
+      //caso posición actual es la salida
+      lab.mapa[y][x]='.';
+      mostrarLaberinto(lab);
+      return true;
   }
 
   else if (lab.mapa[y][x] == '#' || lab.mapa[y][x] == '.') {
-    //caso posición actual es un MURO o se visitó antes
-    return false;
+      //caso posición actual es un MURO o se visitó antes
+      return false;
   }
   else {
-    lab.mapa[y][x]='.';
-    mostrarLaberinto(lab);
-    if (lab.mapa[y][x - 1] == ' ' && busqueda(lab,y,x - 1)) {
-      return true;
-    }
-    if (lab.mapa[y][x + 1] == ' ' && busqueda(lab,y,x + 1)) {
-      return true;
-    }
-    if (lab.mapa[y - 1][x] == ' ' && busqueda(lab,y - 1,x)) {
-      return true;
-    }
-    if (lab.mapa[y + 1][x] == ' ' && busqueda(lab,y + 1,x)) {
-      return true;
-    }
-    //no hay camino desde la posición actual
-    lab.mapa[y][x] = 'I';
-    mostrarLaberinto(lab);
-    return false;
-
+      lab.mapa[y][x]='.';
+      mostrarLaberinto(lab);
+      if (lab.mapa[y][x + 1] == ' ' && busqueda(lab,y,x + 1)) {
+          return true;
+      }
+      if (lab.mapa[y][x - 1] == ' ' && busqueda(lab,y,x - 1)) {
+          return true;
+      }
+      if (lab.mapa[y - 1][x] == ' ' && busqueda(lab,y - 1,x)) {
+          return true;
+      }
+      if (lab.mapa[y + 1][x] == ' ' && busqueda(lab,y + 1,x)) {
+          return true;
+      }
+      //no hay camino desde la posición actual
+      lab.mapa[y][x] = 'I';
+      mostrarLaberinto(lab);
+      return false;
   }
 }
 
@@ -54,53 +61,59 @@ void buscarCamino(Laberinto& lab, bool& encontrado) {
       encontrado = busqueda(lab,y,x);
 }
 
+
 //*************************************************************************
-// Generar el laberinto
+// AUX1:Generar el laberinto1
+//*************************************************************************
+void cargarLaberinto(ifstream& f, Laberinto& lab, const int y, const int x, const int columnas) {
+     char casilla = f.get();
+     if (!f.eof()) {
+        //caso no ha terminado de leer el fichero
+        if (casilla != '\n') {
+            //caso no se ha leido un salto de linea
+            lab.mapa[y][x] = casilla;
+            if (y == 0) {
+                //caso primera fila
+                cargarLaberinto(f,lab,y,x + 1,columnas + 1);
+            }
+            else {cargarLaberinto(f,lab,y,x + 1,columnas);}
+        }
+        else{
+            //caso se ha leido un salto de línea
+            if (x == columnas) {
+              //caso es una línea correcta
+              cargarLaberinto(f,lab,y + 1,0,columnas);
+            }
+            else {
+              //caso es una línea incorrecta
+              cargarLaberinto(f,lab,y,0,columnas);
+            }
+        }
+     }
+     else {
+       lab.alto = y;
+       lab.ancho = columnas;
+     }
+}
+//*************************************************************************
+// Generar el laberinto1
 //*************************************************************************
 
 void cargarLaberinto(const char nombreFichero[], Laberinto& lab) {
-  ifstream f;
-  f.open(nombreFichero);
-  if (f.is_open()) {
-    //-------------VARIABLES------------------------------------------------
-    int columnas = 0; //nº columnas matriz leida
-    int filas = 0;// nº filas matriz leida
-    int y = 0; //Coordenada y de la Matriz
-    int x = 0; //Coordenada x de la matriz
-    bool primFila = true; //true si está leyendo la primera fila
-    //------------LECTURA MATRIZ--------------------------------------------
-    //Intento leer la primera casilla
-    char casilla = f.get();
-    while (!f.eof()) {
-      //caso he conseguido leer la casilla
-      if (casilla != '\n') {
-        //caso <<casilla>> no es un salto de línea
-        lab.mapa[y][x] = casilla;
-        x++; //avanzo una columna;
-        if (primFila) {
-          //caso estoy leyendo la primera fila
-          columnas++; //número de columnas que tiene la matriz
-        }
-      }
-      else {
-        //caso <<casilla>> es un salto de línea
-        y++; //avanzo una fila
-        x = 0; //reinicio las columnas
-        primFila = false; //ya no estoy leyendo primera fila
-        filas++; //numero de filas que tiene la matriz
-      }
-      //Intento leer siguiente casilla
-      casilla = f.get();
+    ifstream f (nombreFichero);
+    if (f.is_open()) {
+        //Uso inmersión mediante reforzamiento de la precondición
+        cargarLaberinto(f,lab,0,0,0);
+      //  cout << lab.alto << endl;
+      //  cout << lab.ancho << endl;
+        f.close();
     }
-    //fin de fichero alcanzado
-    lab.ancho = columnas;
-    lab.alto = filas;
-    f.close(); //cierro fichero
-  }
-  else {cerr << "Fichero " << nombreFichero << " no existe" << endl;}
+    else { cerr << "Fichero " << nombreFichero << "no se puede abrir" << endl;}
 }
 
-
+//*************************************************************************
+// Generar el laberinto2
+//*************************************************************************
 void generarLaberinto(Laberinto &lab, double densidad, int nFils, int nCols) {
   srand(time(nullptr)); //genero semilla
   lab.alto = nFils;
@@ -133,7 +146,7 @@ void generarLaberinto(Laberinto &lab, double densidad, int nFils, int nCols) {
 }
 
 //*************************************************************************
-// Visualizar el camino encontrado
+// Visualizar el camino encontrado: ITERATIVO
 //*************************************************************************
 
 // Pre:   "lab" es un laberinto correcto, segÃºn la especificaciÃ³n dada para el tipo
@@ -159,9 +172,9 @@ void mostrarLaberinto(const Laberinto& lab) {
 }
 
 
-// Pre:  "lab" es un laberinto correcto, segÃºn la especificaciÃ³n en el enunciado
-// Post:  Se haa mostrado el laberinto por la salida estÃ¡ndar
-// Coms:  VersiÃ³n recursiva
+//*************************************************************************
+// Visualizar el camino encontrado: RECURSIVO
+//*************************************************************************
 
 void mostrarLaberintoR(const Laberinto& lab){
 

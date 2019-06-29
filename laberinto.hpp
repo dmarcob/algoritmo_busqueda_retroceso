@@ -31,7 +31,23 @@ struct Laberinto{
     char mapa[MAX_DIM][MAX_DIM];
 };
 
+
+//*************************************************************************
+// AUX1:Encontrar un camino en el laberinto
+//*************************************************************************
+// Pre:   * "lab" es un laberinto correcto y limpio
+//        * las casillas (1,1) y (lab.alto-2,lab.ancho-2) contienen LIBRE
+//          o CAMINO y se ha marcado con CAMINO las casillas de un camino
+//          que une las casillas (1,1) y (y - 1, x - 1)
+// Post:   busqueda(lab,x,y) = <true> sii, se cumplen las condiciones siguientes:
+//         * en "lab" se ha marcado con CAMINO las casillas de un camino
+//           que une las casillas (1,1) y (lab.alto-2,lab.ancho-2)
+//         * las casillas visitadas que no llevaban a la salida quedan marcadas
+//           como IMPOSIBLE
+//         * el resto de casillas no se han modificado
 bool busqueda(Laberinto& lab, int x, int y);
+
+
 //*************************************************************************
 // Encontrar un camino en el laberinto
 //*************************************************************************
@@ -47,7 +63,12 @@ bool busqueda(Laberinto& lab, int x, int y);
 void buscarCamino(Laberinto& lab, bool &encontrado);
 
 //*************************************************************************
-// Generar el laberinto
+// AUX1:Generar el laberinto1
+//*************************************************************************
+void cargarLaberinto(ifstream& f, Laberinto& lab, const int y, const int x, const int columnas );
+
+//*************************************************************************
+// Generar el laberinto1
 //*************************************************************************
 
 // Pre:   "nombFichero" es el nombre de un fichero que contiene un laberinto
@@ -56,21 +77,28 @@ void buscarCamino(Laberinto& lab, bool &encontrado);
 //        especificaciÃ³n dada para el tipo
 void cargarLaberinto(const char nombFichero[], Laberinto& lab);
 
+//*************************************************************************
+// Generar el laberinto2
+//*************************************************************************
 //Pre:  * 3<=lab.alto, lab.ancho, fila, col <=MAX_DIM
 //      * 0 <= densidad <= 1
 //Post: "lab" queda inicializado con un laberinto aleatorio con "nFils" filas
 //      y "nCols" columnas, correcto
 void generarLaberinto(Laberinto& lab, const double densidad, const int nFils, const int nCols);
 
-//*************************************************************************
-// Visualizar el camino encontrado
-//*************************************************************************
 
+//*************************************************************************
+// Visualizar el camino encontrado:ITERATIVO
+//*************************************************************************
 // Pre:   "lab" es un laberinto correcto
 // Post:  Se ha mostrado el laberinto por la salida estÃ¡ndar
 // Coms:  VersiÃ³n iterativa
 void mostrarLaberinto(const Laberinto& lab);
 
+
+//*************************************************************************
+// Visualizar el camino encontrado:ITERATIVO
+//*************************************************************************
 // Pre:  "lab" es un laberinto correcto
 // Post:  Se ha mostrado el laberinto por la salida estÃ¡ndar
 // Coms:  VersiÃ³n recursiva
