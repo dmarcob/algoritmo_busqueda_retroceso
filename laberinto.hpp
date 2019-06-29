@@ -95,6 +95,11 @@ void generarLaberinto(Laberinto& lab, const double densidad, const int nFils, co
 // Coms:  VersiÃ³n iterativa
 void mostrarLaberinto(const Laberinto& lab);
 
+//*************************************************************************
+//  Aux1:Visualizar el camino encontrado: RECURSIVO
+//*************************************************************************
+void mostrarLaberintoR(const Laberinto& lab,const int y, const int x);
+
 
 //*************************************************************************
 // Visualizar el camino encontrado:ITERATIVO

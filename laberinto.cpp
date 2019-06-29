@@ -11,8 +11,6 @@
 #include <cstdlib> //para "srand" "rand"
 #include "laberinto.hpp"
 
-// ARREGLAR->   GenerarLaberinto1
-// COMPLETAR -> mostrarLaberintoR
 //*************************************************************************
 // AUX1:Encontrar un camino en el laberinto
 //*************************************************************************
@@ -20,7 +18,8 @@ bool busqueda(Laberinto& lab, int y, int x) {
   if (y == lab.alto - 2 && x == lab.ancho - 2) {
       //caso posición actual es la salida
       lab.mapa[y][x]='.';
-      mostrarLaberinto(lab);
+      //mostrarLaberinto(lab);
+      mostrarLaberintoR(lab);
       return true;
   }
 
@@ -30,7 +29,8 @@ bool busqueda(Laberinto& lab, int y, int x) {
   }
   else {
       lab.mapa[y][x]='.';
-      mostrarLaberinto(lab);
+      //mostrarLaberinto(lab);
+      mostrarLaberintoR(lab);
       if (lab.mapa[y][x + 1] == ' ' && busqueda(lab,y,x + 1)) {
           return true;
       }
@@ -45,7 +45,8 @@ bool busqueda(Laberinto& lab, int y, int x) {
       }
       //no hay camino desde la posición actual
       lab.mapa[y][x] = 'I';
-      mostrarLaberinto(lab);
+      //mostrarLaberinto(lab);
+      mostrarLaberintoR(lab);
       return false;
   }
 }
@@ -104,8 +105,6 @@ void cargarLaberinto(const char nombreFichero[], Laberinto& lab) {
     if (f.is_open()) {
         //Uso inmersión mediante reforzamiento de la precondición
         cargarLaberinto(f,lab,0,0,0);
-      //  cout << lab.alto << endl;
-      //  cout << lab.ancho << endl;
         f.close();
     }
     else { cerr << "Fichero " << nombreFichero << "no se puede abrir" << endl;}
@@ -171,12 +170,41 @@ void mostrarLaberinto(const Laberinto& lab) {
     usleep(RETRASO_MOSTRAR); //microsegundos
 }
 
+//*************************************************************************
+//  Aux1:Visualizar el camino encontrado: RECURSIVO
+//*************************************************************************
+void mostrarLaberintoR(const Laberinto& lab,const int y, const int x){
+
+  if (y == 0 && x == 0) {system("clear");}
+  if (y != lab.alto) {
+    //No ha llegado al final del laberinto
+    if ( x != lab.ancho) {
+      //No ha llegado al final de una fila
+      if (lab.mapa[y][x] == CAMINO) {
+          cout << "\033[1;36;46m" << lab.mapa[y][x] << "\033[0m";
+      } else if (lab.mapa[y][x] == IMPOSIBLE) {
+          cout << "\033[1;36;41m" << lab.mapa[y][x] << "\033[0m";
+      }
+      else {
+         cout << lab.mapa[y][x];
+      }
+      mostrarLaberintoR(lab,y,x + 1);
+    }
+    else {
+      //Ha llegado al final de una fila
+      cout << endl;
+      mostrarLaberintoR(lab,y + 1,0);
+    }
+  }
+  else {usleep(RETRASO_MOSTRAR);} //microsegundos
+}
+
 
 //*************************************************************************
 // Visualizar el camino encontrado: RECURSIVO
 //*************************************************************************
 
 void mostrarLaberintoR(const Laberinto& lab){
-
-    // COMPLETAR
+    //inmersión por reforzamiento de precondición
+    mostrarLaberintoR(lab,0,0);
 }
